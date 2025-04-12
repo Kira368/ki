@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AnimeFlix - Смотри аниме онлайн</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        body {
+            background-color: #1a1a1a;
+            color: #fff;
+            padding-top: 60px; /* Отступ для фиксированной шапки */
+        }
+        
+        /* Новая шапка (исправленная) */
+        .navbar {
+            background-color: #111;
+            padding: 10px 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 100;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+        
+        .nav-container {
+            width: 90%;
+            max-width: 1200px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ff0066;
+            text-decoration: none;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .nav-link {
+            color: #fff;
+            text-decoration: none;
+            font-size: 16px;
+            transition: color 0.3s;
+        }
+        
+        .nav-link:hover {
+            color: #ff0066;
+        }
+        
+        /* Остальные стили БЕЗ ИЗМЕНЕНИЙ */
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .anime-player {
+            width: 100%;
+            background-color: #222;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+        
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+        }
+        
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        .player-controls {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px;
+            background-color: #333;
+        }
+        
+        .episode-nav {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn {
+            padding: 8px 15px;
+            background-color: #ff0066;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .btn:hover {
+            background-color: #e6005c;
+        }
+        
+        .episode-list-btn {
+            background-color: #444;
+        }
+        
+        .episode-list-btn:hover {
+            background-color: #555;
+        }
+        
+        .anime-info {
+            display: flex;
+            margin-bottom: 30px;
+            background-color: #222;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .anime-poster {
+            width: 200px;
+            height: 300px;
+            object-fit: cover;
+        }
+        
+        .anime-details {
+            padding: 20px;
+            flex: 1;
+        }
+        
+        .anime-title {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: #ff0066;
+        }
+        
+        .anime-meta {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            color: #aaa;
+        }
+        
+        .anime-description {
+            line-height: 1.5;
+            color: #ddd;
+        }
+        
+        .episodes-container {
+            background-color: #222;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .episodes-title {
+            font-size: 20px;
+            margin-bottom: 15px;
+            color: #ff0066;
+        }
+        
+        .episodes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 10px;
+        }
+        
+        .episode-card {
+            background-color: #333;
+            padding: 10px;
+            border-radius: 4px;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .episode-card:hover {
+            background-color: #444;
+        }
+        
+        .episode-card.active {
+            background-color: #ff0066;
+        }
+        
+        .catalog {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
+        .anime-card {
+            background-color: #222;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: transform 0.3s;
+            cursor: pointer;
+        }
+        
+        .anime-card:hover {
+            transform: scale(1.05);
+        }
+        
+        .anime-card-img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+        }
+        
+        .anime-card-title {
+            padding: 10px;
+            font-size: 16px;
+            text-align: center;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .home-page {
+            text-align: center;
+        }
+        
+        .welcome-message {
+            font-size: 36px;
+            margin-bottom: 20px;
+            color: #ff0066;
+        }
+        
+        .featured-anime {
+            margin-top: 30px;
+        }
+        
+        .section-title {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #ff0066;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <!-- Новая исправленная шапка -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#" class="logo" onclick="showHomePage()">AnimeFlix</a>
+            <div class="nav-links">
+                <a href="#" class="nav-link" onclick="showHomePage()">Главная</a>
+                <a href="#" class="nav-link" onclick="showCatalogPage()">Каталог аниме</a>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Весь остальной код БЕЗ ИЗМЕНЕНИЙ -->
+    <main class="container">
+        <!-- Главная страница -->
+        <div id="home-page" class="home-page">
+            <h1 class="welcome-message">Добро пожаловать на AnimeFlix!</h1>
+            <p>Смотрите лучшие аниме онлайн в высоком качестве</p>
+            
+            <div class="featured-anime">
+                <h2 class="section-title">Популярные аниме</h2>
+                <div class="catalog">
+                    <div class="anime-card" onclick="showAnimePage('attack-on-titan')">
+                        <img src="https://via.placeholder.com/200x250/ff0066/ffffff?text=Attack+on+Titan" alt="Attack on Titan" class="anime-card-img">
+                        <div class="anime-card-title">Атака Титанов</div>
+                    </div>
+                    <div class="anime-card" onclick="showAnimePage('demon-slayer')">
+                        <img src="https://via.placeholder.com/200x250/ff0066/ffffff?text=Demon+Slayer" alt="Demon Slayer" class="anime-card-img">
+                        <div class="anime-card-title">Клинок, рассекающий демонов</div>
+                    </div>
+                    <div class="anime-card" onclick="showAnimePage('jujutsu-kaisen')">
+                        <img src="https://via.placeholder.com/200x250/ff0066/ffffff?text=Jujutsu+Kaisen" alt="Jujutsu Kaisen" class="anime-card-img">
+                        <div class="anime-card-title">Магическая битва</div>
+                    </div>
+                    <div class="anime-card" onclick="showAnimePage('one-piece')">
+                        <img src="https://via.placeholder.com/200x250/ff0066/ffffff?text=One+Piece" alt="One Piece" class="anime-card-img">
+                        <div class="anime-card-title">Ван Пис</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Страница каталога -->
+        <div id="catalog-page" class="hidden">
+            <h1 class="section-title">Каталог аниме</h1>
+            <div class="catalog">
+                <div class="anime-card" onclick="showAnimePage('attack-on-titan')">
+                    <img src="https://via.placeholder.com/200x250/ff0066/ffffff?text=Attack+on+Titan" alt="Attack on Titan" class="anime-card-img">
+                    <div class="anime-card-title">Атака Титанов</div>
+                </div>
+                <div class="anime-card" onclick="showAnimePage('demon-slayer')">
+                    <img src="https://via.placeholder.com/200x250/ff0066/ffffff?text=Demon+Slayer" alt="Demon Slayer" class="anime-card-img">
+                    <div class="anime-card-title">Клинок, рассекающий демонов</div>
+                </div>
+                <div class="anime-card" onclick="showAnimePage('jujutsu-kaisen')">
+                    <img src="https://via.placeholder.com/200x250/ff0066/ffffff?text=Jujutsu+Kaisen" alt="Jujutsu Kaisen" class="anime-card-img">
+                    <div class="anime-card-title">Магическая битва</div>
+                </div>
+                <div class="anime-card" onclick="showAnimePage('one-piece')">
+                    <img src="https://via.placeholder.com/200x250/ff0066/ffffff?text=One+Piece" alt="One Piece" class="anime-card-img">
+                    <div class="anime-card-title">Ван Пис</div>
+                </div>
+                <div class="anime-card" onclick="showAnimePage('naruto')">
+                    <img src="https://via.placeholder.com/200x250/ff0066/ffffff?text=Naruto" alt="Naruto" class="anime-card-img">
+                    <div class="anime-card-title">Наруто</div>
+                </div>
+                <div class="anime-card" onclick="showAnimePage('death-note')">
+                    <img src="https://via.placeholder.com/200x250/ff0066/ffffff?text=Death+Note" alt="Death Note" class="anime-card-img">
+                    <div class="anime-card-title">Тетрадь смерти</div>
+                </div>
+                <div class="anime-card" onclick="showAnimePage('tokyo-revengers')">
+                    <img src="https://via.placeholder.com/200x250/ff0066/ffffff?text=Tokyo+Revengers" alt="Tokyo Revengers" class="anime-card-img">
+                    <div class="anime-card-title">Токийские мстители</div>
+                </div>
+                <div class="anime-card" onclick="showAnimePage('chainsaw-man')">
+                    <img src="https://via.placeholder.com/200x250/ff0066/ffffff?text=Chainsaw+Man" alt="Chainsaw Man" class="anime-card-img">
+                    <div class="anime-card-title">Человек-бензопила</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Страница аниме -->
+        <div id="anime-page" class="hidden">
+            <div class="anime-info">
+                <img src="https://via.placeholder.com/200x300/ff0066/ffffff?text=Anime+Poster" alt="Anime Poster" class="anime-poster">
+                <div class="anime-details">
+                    <h1 class="anime-title" id="anime-title">Название аниме</h1>
+                    <div class="anime-meta">
+                        <span id="anime-year">2023</span>
+                        <span id="anime-genre">Жанр</span>
+                        <span id="anime-status">Статус</span>
+                    </div>
+                    <p class="anime-description" id="anime-description">
+                        Описание аниме будет здесь. Это временный текст-заполнитель для демонстрации внешнего вида страницы.
+                        Настоящее описание будет содержать информацию о сюжете аниме, персонажах и других важных деталях.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="anime-player">
+                <div class="video-container">
+                    <iframe id="anime-video" src="https://www.youtube.com/embed/dQw4w9WgXcQ" allowfullscreen></iframe>
+                </div>
+                <div class="player-controls">
+                    <div class="episode-nav">
+                        <button class="btn" id="prev-episode" onclick="prevEpisode()">Предыдущая серия</button>
+                        <button class="btn" id="next-episode" onclick="nextEpisode()">Следующая серия</button>
+                    </div>
+                    <button class="btn episode-list-btn" onclick="showEpisodeList()">Список серий</button>
+                </div>
+            </div>
+            
+            <div class="episodes-container" id="episodes-container">
+                <h2 class="episodes-title">Список серий</h2>
+                <div class="episodes-grid" id="episodes-grid">
+                    <!-- Эпизоды будут добавлены через JavaScript -->
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <script>
+        // Текущее состояние приложения
+        const state = {
+            currentPage: 'home',
+            currentAnime: null,
+            currentEpisode: 1,
+            totalEpisodes: 12,
+            animeList: [
+                {
+                    id: 'attack-on-titan',
+                    title: 'Атака Титанов',
+                    year: '2013-2023',
+                    genre: 'Экшен, Драма, Фэнтези',
+                    status: 'Завершён',
+                    description: 'Человечество живёт в городах, окружённых тройными стенами, защищающими людей от титанов — огромных существ, пожирающих людей. Юный Эрен Йегер клянётся уничтожить всех титанов после того, как они прорываются через стены и уничтожают его родной город.',
+                    episodes: 89,
+                    poster: 'https://via.placeholder.com/200x300/ff0066/ffffff?text=Attack+on+Titan'
+                },
+                {
+                    id: 'demon-slayer',
+                    title: 'Клинок, рассекающий демонов',
+                    year: '2019-...',
+                    genre: 'Экшен, Фэнтези, Ужасы',
+                    status: 'Онгоинг',
+                    description: 'Танджиро Камадо — добросердечный мальчик, который зарабатывает на жизнь, продавая уголь. Однажды вся его семья, кроме сестры Незуко, была убита демоном, а сама Незуко превратилась в демона. Теперь Танджиро должен стать убийцей демонов, чтобы отомстить за семью и найти способ вернуть сестру в человеческий облик.',
+                    episodes: 55,
+                    poster: 'https://via.placeholder.com/200x300/ff0066/ffffff?text=Demon+Slayer'
+                },
+                {
+                    id: 'jujutsu-kaisen',
+                    title: 'Магическая битва',
+                    year: '2020-...',
+                    genre: 'Экшен, Фэнтези, Ужасы',
+                    status: 'Онгоинг',
+                    description: 'Юджи Итадори — физически сильный старшеклассник, который присоединяется к оккультному клубу, несмотря на свою врождённую способность видеть проклятий. После того, как он съедает палец могущественного проклятия, чтобы спасти своих друзей, он становится сосудом этого проклятия и попадает в мир магов-экзорцистов.',
+                    episodes: 47,
+                    poster: 'https://via.placeholder.com/200x300/ff0066/ffffff?text=Jujutsu+Kaisen'
+                },
+                {
+                    id: 'one-piece',
+                    title: 'Ван Пис',
+                    year: '1999-...',
+                    genre: 'Экшен, Приключения, Комедия',
+                    status: 'Онгоинг',
+                    description: 'Монки Д. Луффи мечтает стать Королём Пиратов. После того как он случайно съедает Дьявольский плод, его тело приобретает свойства резины. Вместе со своей командой Луффи отправляется на поиски легендарного сокровища Ван Пис, чтобы осуществить свою мечту.',
+                    episodes: 1100,
+                    poster: 'https://via.placeholder.com/200x300/ff0066/ffffff?text=One+Piece'
+                },
+                {
+                    id: 'naruto',
+                    title: 'Наруто',
+                    year: '2002-2017',
+                    genre: 'Экшен, Приключения, Комедия',
+                    status: 'Завершён',
+                    description: 'Наруто Узумаки — молодой ниндзя, который мечтает стать Хокаге, лидером своей деревни, чтобы заслужить признание жителей. Внутри него запечатан Девятихвостый демон-лис, что делает его изгоем среди сверстников. Наруто упорно тренируется и набирается опыта, чтобы осуществить свою мечту.',
+                    episodes: 720,
+                    poster: 'https://via.placeholder.com/200x300/ff0066/ffffff?text=Naruto'
+                },
+                {
+                    id: 'death-note',
+                    title: 'Тетрадь смерти',
+                    year: '2006-2007',
+                    genre: 'Детектив, Психологический триллер, Сверхъестественное',
+                    status: 'Завершён',
+                    description: 'Лайт Ягами — гениальный студент, который находит Тетрадь смерти, упавшую с небес. Эта тетрадь принадлежит шинигами Рюку и обладает способностью убивать людей, чьи имена записаны в неё. Лайт решает использовать тетрадь, чтобы создать идеальный мир без преступности, но его планы нарушает детектив L.',
+                    episodes: 37,
+                    poster: 'https://via.placeholder.com/200x300/ff0066/ffffff?text=Death+Note'
+                },
+                {
+                    id: 'tokyo-revengers',
+                    title: 'Токийские мстители',
+                    year: '2021-...',
+                    genre: 'Драма, Психологический, Экшен',
+                    status: 'Онгоинг',
+                    description: 'Такиши Хината — неудачник, который узнаёт, что его бывшая девушка Хината и её брат были убиты членами банды Токийские мстители. После несчастного случая он переносится на 12 лет в прошлое и получает шанс изменить будущее, став членом банды и пытаясь предотвратить трагедию.',
+                    episodes: 37,
+                    poster: 'https://via.placeholder.com/200x300/ff0066/ffffff?text=Tokyo+Revengers'
+                },
+                {
+                    id: 'chainsaw-man',
+                    title: 'Человек-бензопила',
+                    year: '2022-...',
+                    genre: 'Экшен, Ужасы, Тёмное фэнтези',
+                    status: 'Онгоинг',
+                    description: 'Денджи — бедный молодой человек, который работает охотником на демонов, чтобы расплатиться с долгами своего покойного отца. После предательства он умирает, но его демон-питомец Почита возрождает его, слившись с его телом. Теперь Денджи может превращать части своего тела в бензопилы и становится известен как Человек-бензопила.',
+                    episodes: 12,
+                    poster: 'https://via.placeholder.com/200x300/ff0066/ffffff?text=Chainsaw+Man'
+                }
+            ]
+        };
+        
+        // DOM элементы
+        const homePage = document.getElementById('home-page');
+        const catalogPage = document.getElementById('catalog-page');
+        const animePage = document.getElementById('anime-page');
+        const animeTitle = document.getElementById('anime-title');
+        const animeYear = document.getElementById('anime-year');
+        const animeGenre = document.getElementById('anime-genre');
+        const animeStatus = document.getElementById('anime-status');
+        const animeDescription = document.getElementById('anime-description');
+        const animeVideo = document.getElementById('anime-video');
+        const prevEpisodeBtn = document.getElementById('prev-episode');
+        const nextEpisodeBtn = document.getElementById('next-episode');
+        const episodesGrid = document.getElementById('episodes-grid');
+        const episodesContainer = document.getElementById('episodes-container');
+        
+        // Показать главную страницу
+        function showHomePage() {
+            homePage.classList.remove('hidden');
+            catalogPage.classList.add('hidden');
+            animePage.classList.add('hidden');
+            state.currentPage = 'home';
+        }
+        
+        // Показать страницу каталога
+        function showCatalogPage() {
+            homePage.classList.add('hidden');
+            catalogPage.classList.remove('hidden');
+            animePage.classList.add('hidden');
+            state.currentPage = 'catalog';
+        }
+        
+        // Показать страницу аниме
+        function showAnimePage(animeId) {
+            homePage.classList.add('hidden');
+            catalogPage.classList.add('hidden');
+            animePage.classList.remove('hidden');
+            state.currentPage = 'anime';
+            
+            // Найти аниме в списке
+            const anime = state.animeList.find(item => item.id === animeId);
+            if (anime) {
+                state.currentAnime = anime;
+                state.currentEpisode = 1;
+                state.totalEpisodes = anime.episodes;
+                
+                // Обновить информацию об аниме
+                animeTitle.textContent = anime.title;
+                animeYear.textContent = anime.year;
+                animeGenre.textContent = anime.genre;
+                animeStatus.textContent = anime.status;
+                animeDescription.textContent = anime.description;
+                document.querySelector('.anime-poster').src = anime.poster;
+                
+                // Обновить видео (заглушка)
+                animeVideo.src = `https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&episode=${state.currentEpisode}`;
+                
+                // Обновить список серий
+                updateEpisodeList();
+                
+                // Скрыть список серий по умолчанию
+                episodesContainer.classList.add('hidden');
+            }
+        }
+        
+        // Обновить список серий
+        function updateEpisodeList() {
+            episodesGrid.innerHTML = '';
+            
+            for (let i = 1; i <= state.totalEpisodes; i++) {
+                const episodeCard = document.createElement('div');
+                episodeCard.className = `episode-card ${i === state.currentEpisode ? 'active' : ''}`;
+                episodeCard.textContent = `Серия ${i}`;
+                episodeCard.onclick = () => changeEpisode(i);
+                episodesGrid.appendChild(episodeCard);
+            }
+        }
+        
+        // Показать/скрыть список серий
+        function showEpisodeList() {
+            episodesContainer.classList.toggle('hidden');
+        }
+        
+        // Изменить текущую серию
+        function changeEpisode(episodeNumber) {
+            if (episodeNumber >= 1 && episodeNumber <= state.totalEpisodes) {
+                state.currentEpisode = episodeNumber;
+                animeVideo.src = `https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&episode=${state.currentEpisode}`;
+                updateEpisodeList();
+                episodesContainer.classList.add('hidden');
+            }
+        }
+        
+        // Следующая серия
+        function nextEpisode() {
+            changeEpisode(state.currentEpisode + 1);
+        }
+        
+        // Предыдущая серия
+        function prevEpisode() {
+            changeEpisode(state.currentEpisode - 1);
+        }
+        
+        // Инициализация
+        showHomePage();
+    </script>
+</body>
+</html>
