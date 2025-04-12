@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AnimeFlix - Смотри аниме онлайн</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        body {
+            background-color: #1a1a1a;
+            color: #fff;
+            padding-top: 60px;
+        }
+        
+        /* Шапка */
+        .navbar {
+            background-color: #111;
+            padding: 10px 20px;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            height: 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+        
+        .logo {
+            font-size: 20px;
+            font-weight: bold;
+            color: #ff0066;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .logo-icon {
+            width: 24px;
+            height: 24px;
+        }
+        
+        /* Мобильное меню */
+        .menu-btn {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .menu-btn span {
+            display: block;
+            width: 25px;
+            height: 3px;
+            background-color: #fff;
+            transition: all 0.3s;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .nav-link {
+            color: #fff;
+            text-decoration: none;
+            font-size: 16px;
+            transition: color 0.3s;
+        }
+        
+        .nav-link:hover {
+            color: #ff0066;
+        }
+        
+        /* Основной контент */
+        .container {
+            width: 95%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 10px 0;
+        }
+        
+        /* Аниме плеер */
+        .anime-player {
+            width: 100%;
+            background-color: #222;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+        
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+        }
+        
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        .player-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding: 10px;
+            background-color: #333;
+        }
+        
+        .episode-nav {
+            display: flex;
+            justify-content: space-between;
+            gap: 5px;
+        }
+        
+        .btn {
+            padding: 8px 12px;
+            background-color: #ff0066;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-size: 14px;
+            flex: 1;
+            text-align: center;
+        }
+        
+        .btn:hover {
+            background-color: #e6005c;
+        }
+        
+        /* Список серий */
+        .episodes-container {
+            background-color: #222;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .episodes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 8px;
+        }
+        
+        .episode-card {
+            background-color: #333;
+            padding: 8px 5px;
+            border-radius: 4px;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-size: 14px;
+        }
+        
+        /* Карточки аниме */
+        .catalog {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 15px;
+        }
+        
+        .anime-card {
+            background-color: #222;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: transform 0.3s;
+        }
+        
+        .anime-card-img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+        
+        .anime-card-title {
+            padding: 8px;
+            font-size: 14px;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        /* Адаптация для мобильных */
+        @media (max-width: 768px) {
+            .menu-btn {
+                display: flex;
+            }
+            
+            .nav-links {
+                position: fixed;
+                top: 60px;
+                left: -100%;
+                width: 100%;
+                background-color: #111;
+                flex-direction: column;
+                align-items: center;
+                padding: 20px 0;
+                gap: 20px;
+                transition: 0.3s;
+                z-index: 999;
+            }
+            
+            .nav-links.active {
+                left: 0;
+            }
+            
+            .menu-btn.active span:nth-child(1) {
+                transform: translateY(8px) rotate(45deg);
+            }
+            
+            .menu-btn.active span:nth-child(2) {
+                opacity: 0;
+            }
+            
+            .menu-btn.active span:nth-child(3) {
+                transform: translateY(-8px) rotate(-45deg);
+            }
+            
+            .anime-info {
+                flex-direction: column;
+            }
+            
+            .anime-poster {
+                width: 100%;
+                height: auto;
+                max-height: 300px;
+            }
+            
+            .anime-details {
+                padding: 15px;
+            }
+            
+            .player-controls {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+            
+            .episode-nav {
+                width: 100%;
+            }
+        }
+        
+        /* Общие стили */
+        .hidden {
+            display: none;
+        }
+        
+        .home-page {
+            text-align: center;
+            padding: 10px 0;
+        }
+        
+        .welcome-message {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: #ff0066;
+        }
+        
+        .section-title {
+            font-size: 20px;
+            margin-bottom: 15px;
+            color: #ff0066;
+            text-align: left;
+        }
+        
+        .anime-info {
+            display: flex;
+            margin-bottom: 20px;
+            background-color: #222;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .anime-poster {
+            width: 150px;
+            height: 220px;
+            object-fit: cover;
+        }
+        
+        .anime-details {
+            padding: 15px;
+            flex: 1;
+        }
+        
+        .anime-title {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: #ff0066;
+        }
+        
+        .anime-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 10px;
+            color: #aaa;
+            font-size: 14px;
+        }
+        
+        .anime-description {
+            line-height: 1.5;
+            color: #ddd;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Шапка с мобильным меню -->
+    <nav class="navbar">
+        <a href="#" class="logo" onclick="showHomePage()">
+            <svg class="logo-icon" viewBox="0 0 24 24" fill="#ff0066">
+                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+            </svg>
+            AnimeFlix
+        </a>
+        
+        <button class="menu-btn" id="menuBtn">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        
+        <div class="nav-links" id="navLinks">
+            <a href="#" class="nav-link" onclick="showHomePage()">Главная</a>
+            <a href="#" class="nav-link" onclick="showCatalogPage()">Каталог</a>
+        </div>
+    </nav>
+
+    <!-- Основной контент -->
+    <main class="container">
+        <!-- Главная страница -->
+        <div id="home-page" class="home-page">
+            <h1 class="welcome-message">Добро пожаловать на AnimeFlix!</h1>
+            <p>Смотрите лучшие аниме онлайн в высоком качестве</p>
+            
+            <div class="featured-anime">
+                <h2 class="section-title">Популярные аниме</h2>
+                <div class="catalog">
+                    <div class="anime-card" onclick="showAnimePage('attack-on-titan')">
+                        <img src="https://via.placeholder.com/200x250/ff0066/ffffff?text=Attack+on+Titan" alt="Attack on Titan" class="anime-card-img">
+                        <div class="anime-card-title">Атака Титанов</div>
+                    </div>
+                    <div class="anime-card" onclick="showAnimePage('demon-slayer')">
+                        <img src="https://via.placeholder.com/200x250/ff0066/ffffff?text=Demon+Slayer" alt="Demon Slayer" class="anime-card-img">
+                        <div class="anime-card-title">Клинок, рассекающий демонов</div>
+                    </div>
+                    <div class="anime-card" onclick="showAnimePage('jujutsu-kaisen')">
+                        <img src="https://via.placeholder.com/200x250/ff0066/ffffff?text=Jujutsu+Kaisen" alt="Jujutsu Kaisen" class="anime-card-img">
+                        <div class="anime-card-title">Магическая битва</div>
+                    </div>
+                    <div class="anime-card" onclick="showAnimePage('one-piece')">
+                        <img src="https://via.placeholder.com/200x250/ff0066/ffffff?text=One+Piece" alt="One Piece" class="anime-card-img">
+                        <div class="anime-card-title">Ван Пис</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Страница каталога -->
+        <div id="catalog-page" class="hidden">
+            <h1 class="section-title">Каталог аниме</h1>
+            <div class="catalog">
+                <div class="anime-card" onclick="showAnimePage('attack-on-titan')">
+                    <img src="https://via.placeholder.com/200x250/ff0066/ffffff?text=Attack+on+Titan" alt="Attack on Titan" class="anime-card-img">
+                    <div class="anime-card-title">Атака Титанов</div>
+                </div>
+                <div class="anime-card" onclick="showAnimePage('demon-slayer')">
+                    <img src="https://via.placeholder.com/200x250/ff0066/ffffff?text=Demon+Slayer" alt="Demon Slayer" class="anime-card-img">
+                    <div class="anime-card-title">Клинок, рассекающий демонов</div>
+                </div>
+                <div class="anime-card" onclick="showAnimePage('jujutsu-kaisen')">
+                    <img src="https://via.placeholder.com/200x250/ff0066/ffffff?text=Jujutsu+Kaisen" alt="Jujutsu Kaisen" class="anime-card-img">
+                    <div class="anime-card-title">Магическая битва</div>
+                </div>
+                <div class="anime-card" onclick="showAnimePage('one-piece')">
+                    <img src="https://via.placeholder.com/200x250/ff0066/ffffff?text=One+Piece" alt="One Piece" class="anime-card-img">
+                    <div class="anime-card-title">Ван Пис</div>
+                </div>
+                <div class="anime-card" onclick="showAnimePage('naruto')">
+                    <img src="https://via.placeholder.com/200x250/ff0066/ffffff?text=Naruto" alt="Naruto" class="anime-card-img">
+                    <div class="anime-card-title">Наруто</div>
+                </div>
+                <div class="anime-card" onclick="showAnimePage('death-note')">
+                    <img src="https://via.placeholder.com/200x250/ff0066/ffffff?text=Death+Note" alt="Death Note" class="anime-card-img">
+                    <div class="anime-card-title">Тетрадь смерти</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Страница просмотра аниме -->
+        <div id="anime-page" class="hidden">
+            <div class="anime-info">
+                <img src="https://via.placeholder.com/200x300/ff0066/ffffff?text=Anime+Poster" alt="Anime Poster" class="anime-poster">
+                <div class="anime-details">
+                    <h1 class="anime-title" id="anime-title">Название аниме</h1>
+                    <div class="anime-meta">
+                        <span id="anime-year">2023</span>
+                        <span id="anime-genre">Жанр</span>
+                        <span id="anime-status">Статус</span>
+                    </div>
+                    <p class="anime-description" id="anime-description">
+                        Описание аниме будет здесь. Это временный текст-заполнитель для демонстрации внешнего вида страницы.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="anime-player">
+                <div class="video-container">
+                    <iframe id="anime-video" src="https://www.youtube.com/embed/dQw4w9WgXcQ" allowfullscreen></iframe>
+                </div>
+                <div class="player-controls">
+                    <div class="episode-nav">
+                        <button class="btn" id="prev-episode" onclick="prevEpisode()">← Назад</button>
+                        <button class="btn" id="next-episode" onclick="nextEpisode()">Вперед →</button>
+                    </div>
+                    <button class="btn" onclick="toggleEpisodes()">Список серий</button>
+                </div>
+            </div>
+            
+            <div class="episodes-container hidden" id="episodesContainer">
+                <h2 class="section-title">Список серий</h2>
+                <div class="episodes-grid" id="episodesGrid"></div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Состояние приложения
+        const state = {
+            currentPage: 'home',
+            currentAnime: null,
+            currentEpisode: 1,
+            totalEpisodes: 12,
+            animeList: [
+                {
+                    id: 'attack-on-titan',
+                    title: 'Атака Титанов',
+                    year: '2013-2023',
+                    genre: 'Экшен, Драма, Фэнтези',
+                    status: 'Завершён',
+                    description: 'Человечество живёт в городах, окружённых тройными стенами, защищающими людей от титанов.',
+                    episodes: 89,
+                    poster: 'https://via.placeholder.com/200x300/ff0066/ffffff?text=Attack+on+Titan'
+                },
+                // ... остальные аниме
+            ]
+        };
+
+        // DOM элементы
+        const menuBtn = document.getElementById('menuBtn');
+        const navLinks = document.getElementById('navLinks');
+
+        // Мобильное меню
+        menuBtn.addEventListener('click', () => {
+            menuBtn.classList.toggle('active');
+            navLinks.classList.toggle('active');
+        });
+
+        // Навигация
+        function showHomePage() {
+            document.getElementById('home-page').classList.remove('hidden');
+            document.getElementById('catalog-page').classList.add('hidden');
+            document.getElementById('anime-page').classList.add('hidden');
+            state.currentPage = 'home';
+            closeMenu();
+        }
+
+        function showCatalogPage() {
+            document.getElementById('home-page').classList.add('hidden');
+            document.getElementById('catalog-page').classList.remove('hidden');
+            document.getElementById('anime-page').classList.add('hidden');
+            state.currentPage = 'catalog';
+            closeMenu();
+        }
+
+        function showAnimePage(animeId) {
+            const anime = state.animeList.find(a => a.id === animeId);
+            if (anime) {
+                state.currentAnime = anime;
+                state.currentEpisode = 1;
+                state.totalEpisodes = anime.episodes;
+                
+                document.getElementById('anime-title').textContent = anime.title;
+                document.getElementById('anime-year').textContent = anime.year;
+                document.getElementById('anime-genre').textContent = anime.genre;
+                document.getElementById('anime-status').textContent = anime.status;
+                document.getElementById('anime-description').textContent = anime.description;
+                document.querySelector('.anime-poster').src = anime.poster;
+                
+                document.getElementById('home-page').classList.add('hidden');
+                document.getElementById('catalog-page').classList.add('hidden');
+                document.getElementById('anime-page').classList.remove('hidden');
+                
+                updateEpisodeGrid();
+                closeMenu();
+            }
+        }
+
+        // Управление сериями
+        function prevEpisode() {
+            if (state.currentEpisode > 1) {
+                state.currentEpisode--;
+                updatePlayer();
+            }
+        }
+
+        function nextEpisode() {
+            if (state.currentEpisode < state.totalEpisodes) {
+                state.currentEpisode++;
+                updatePlayer();
+            }
+        }
+
+        function toggleEpisodes() {
+            document.getElementById('episodesContainer').classList.toggle('hidden');
+        }
+
+        function updateEpisodeGrid() {
+            const grid = document.getElementById('episodesGrid');
+            grid.innerHTML = '';
+            for (let i = 1; i <= state.totalEpisodes; i++) {
+                const episode = document.createElement('div');
+                episode.className = `episode-card ${i === state.currentEpisode ? 'active' : ''}`;
+                episode.textContent = `Серия ${i}`;
+                episode.onclick = () => {
+                    state.currentEpisode = i;
+                    updatePlayer();
+                    toggleEpisodes();
+                };
+                grid.appendChild(episode);
+            }
+        }
+
+        function updatePlayer() {
+            document.getElementById('anime-video').src = 
+                `https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&episode=${state.currentEpisode}`;
+        }
+
+        function closeMenu() {
+            menuBtn.classList.remove('active');
+            navLinks.classList.remove('active');
+        }
+
+        // Инициализация
+        showHomePage();
+    </script>
+</body>
+</html>
